@@ -1,20 +1,24 @@
-# salesdemo-grafana-dashboards
+# codefresh-contrib/example-grafana-dashboards
 
-Example Grafana dashboards for monitoring a Codefresh Runner + pipelines with Prometheus:
+Example Grafana dashboards for monitoring your Codefresh Hybrid Runner with Prometheus:
 * **Codefresh / Build Metrics** - enter a build number (get this from the URL of a build) to see its Storage, CPU, Memory, and Network stats
 * **Codefresh / Pipeline Metrics** - enter a pipeline ID (get this from the pipeline's Settings) to see its stats across multiple builds
 
-Side note, I also highly recommend using the **Kubernetes / Compute Resources / Namespace (Pods)** graph, which comes [pre-installed](https://github.com/monitoring-mixins/docs) in most popular Prometheus+Grafana stacks like [Grafana Cloud](https://grafana.com/products/cloud/) and the [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) Helm chart. This graph provides detailed stats for any Kubernetes namespace, such as `codefresh` (for the Hybrid Runner) or `argocd`.
+I also highly recommend using the **Kubernetes / Compute Resources / Namespace (Pods)** dashboard, which comes [pre-installed](https://github.com/monitoring-mixins/docs) in most popular Prometheus+Grafana stacks like [Grafana Cloud](https://grafana.com/products/cloud/) and the [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) Helm chart. This dashboard has detailed graphs for any Kubernetes namespace you specify, such as `codefresh` (to monitor the entire Hybrid Runner) or `argocd`.
 
 ## About the Storage graphs
-* **Volume Alocation** - shows PVCs allocated for the Codefresh cache volume. Size reflects the Capacity specified in the PVC and configured in the [Runtime Environment](https://support.codefresh.io/hc/en-us/articles/360016090559-How-to-Setting-up-default-resources-for-your-Runner-Runtime-Environment).
-* **Volume Stats** - shows stats of the bound PVs for the Codefresh cache volume. Sizes reflect that of the PV's actual file system. For local volumes on cluster nodes, this will show the usage and capacity of the node's entire disk.
+* **Volume Allocation** - shows the `capacity` of the Codefresh cache volume, as specified in the PVC and configured in the [Runtime Environment](https://support.codefresh.io/hc/en-us/articles/360016090559-How-to-Setting-up-default-resources-for-your-Runner-Runtime-Environment).
+* **Volume Stats** - shows *actual* usage and capacity of the Codefresh cache volume's bound PVs. Sizes reflect that of the PV's file system. For example, when using local volumes on cluster nodes this will show the usage and capacity of the node's *entire* disk.
 
 ## Prerequisites
 
+These dashboards use metrics that come from the [kube-state-metrics](https://github.com/kubernetes/kube-state-metrics) exporter. This is included by default with some popular Prometheus+Grafana stacks like the [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) Helm chart. **Grafana Cloud**, however, is an exception. If you're a Grafana Cloud user, you'll need to install both kube-state-metrics and the [grafana-agent](https://grafana.com/docs/grafana-cloud/quickstart/agent_k8s/) into any cluster(s) where you've installed the Hybrid Runner. I prefer installing via the [community Helm chart](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-state-metrics). 
 
-## Notes
+After installing kube-state-metrics, you'll need update your Prometheus configuration to scrape it for metrics. This repo includes a very generic scrape config that you can use if you like - just edit your configuration paste it to the `scrape_configs` section.
+* prometheus/scrape_config-kube-state-metrics-2.0.0.yaml
+For Grafana Cloud users, note that your grafana-agent actually pushes a Prometheus configuration to its Prometheus SaaS in the cloud. You can update the Prometheus config that it pushes by editing the `grafana-agent` ConfigMap and then restarting the `grafana-agent` pod.
 
-Testing:
+## Testing
+
 * Grafana (Cloud) 7.5.7, kube-state-metrics 2.0.0
 * Grafana 7.0.3, kube-state-metrics 1.9.7, Prometheus 2.18.1
