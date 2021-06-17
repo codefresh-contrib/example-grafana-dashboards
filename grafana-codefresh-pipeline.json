@@ -20,8 +20,8 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 13,
-  "iteration": 1623516706288,
+  "id": 21,
+  "iteration": 1623937976806,
   "links": [],
   "panels": [
     {
@@ -571,7 +571,7 @@
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "Network Receive Mbit/s",
+          "legendFormat": "Network Receive {{pod}}",
           "refId": "A"
         },
         {
@@ -580,7 +580,7 @@
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "Network Transmit Mbit/s",
+          "legendFormat": "Network Transmit {{pod}}",
           "refId": "B"
         }
       ],
@@ -680,7 +680,7 @@
     ]
   },
   "time": {
-    "from": "now-24h",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {
@@ -710,5 +710,5 @@
   "timezone": "",
   "title": "Codefresh / Pipeline Metrics",
   "uid": "FbdrtqlMk",
-  "version": 28
+  "version": 3
 }

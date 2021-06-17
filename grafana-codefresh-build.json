@@ -20,8 +20,8 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 15,
-  "iteration": 1623519431149,
+  "id": 20,
+  "iteration": 1623937292042,
   "links": [],
   "panels": [
     {
@@ -529,7 +529,7 @@
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "Network Receive Mbit/s {{pod}}",
+          "legendFormat": "Network Receive {{pod}}",
           "refId": "A"
         },
         {
@@ -538,7 +538,7 @@
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "Network Transmit Mbit/s {{pod}}",
+          "legendFormat": "Network Transmit {{pod}}",
           "refId": "B"
         }
       ],
@@ -563,7 +563,7 @@
       "yaxes": [
         {
           "$$hashKey": "object:302",
-          "format": "short",
+          "format": "Mbits",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -667,5 +667,5 @@
   "timezone": "",
   "title": "Codefresh / Build Metrics",
   "uid": "thvUvkFmzz",
-  "version": 13
+  "version": 2
 }
