@@ -13,7 +13,7 @@ I also highly recommend using the **Kubernetes / Compute Resources / Namespace (
 
 The dashboard includes some metrics that come from the [kube-state-metrics](https://github.com/kubernetes/kube-state-metrics) exporter. This is included by default with most popular Prometheus+Grafana stacks like the [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) Helm chart. **Grafana Cloud**, however, is an exception. If you're a Grafana Cloud user, then you'll need to install both kube-state-metrics and the [grafana-agent](https://grafana.com/docs/grafana-cloud/quickstart/agent_k8s/) into any cluster(s) where you've installed the Hybrid Runner. You can install kube-state-metrics via its [community Helm chart](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-state-metrics). 
 
-After installing kube-state-metrics, you'll need to update your Prometheus configuration to scrape it for metrics. Here is a very generic scrape config that you can use - just replace `kube-system` with the namespace where you've installed kube-state-metrics, and then paste it into your Prometheus configuration under the `scrape_configs` section.
+After installing kube-state-metrics, you'll need to update your Prometheus configuration to scrape it for metrics. Here is a very simple scrape config that you can use - just replace `kube-system` with the namespace where you've installed kube-state-metrics, and then paste this into your Prometheus configuration under the `scrape_configs` section.
 ```
 - job_name: kube-state-metrics
     honor_labels: true
