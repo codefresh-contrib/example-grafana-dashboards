@@ -21,7 +21,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 20,
-  "iteration": 1623937292042,
+  "iteration": 1623984675597,
   "links": [],
   "panels": [
     {
@@ -78,17 +78,17 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "kube_persistentvolumeclaim_labels{label_pod_name=\"dind-$build_id\"} * on(persistentvolumeclaim) kube_persistentvolumeclaim_resource_requests_storage_bytes\n",
+          "expr": "kube_persistentvolumeclaim_resource_requests_storage_bytes{persistentvolumeclaim=\"pvc-dind-$build_id\"}\n",
           "format": "time_series",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "{{persistentvolume}}",
+          "legendFormat": "{{persistentvolumeclaim}}",
           "refId": "A"
         },
         {
           "exemplar": true,
-          "expr": "sum(kube_persistentvolumeclaim_labels{label_pod_name=\"dind-$build_id\"} * on(persistentvolumeclaim) kube_persistentvolumeclaim_resource_requests_storage_bytes)",
+          "expr": "sum(kube_persistentvolumeclaim_resource_requests_storage_bytes{persistentvolumeclaim=\"pvc-dind-$build_id\"})",
           "interval": "",
           "legendFormat": "All volumes",
           "refId": "B"
@@ -197,7 +197,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "avg(\nkubelet_volume_stats_capacity_bytes{persistentvolumeclaim=\"pvc-dind-$build_id\"}\n  -\nkubelet_volume_stats_available_bytes{persistentvolumeclaim=\"pvc-dind-$build_id\"}\n) by (persistentvolumeclaim)\n",
+          "expr": "kubelet_volume_stats_capacity_bytes{persistentvolumeclaim=\"pvc-dind-$build_id\"}\n  -\nkubelet_volume_stats_available_bytes{persistentvolumeclaim=\"pvc-dind-$build_id\"}\n",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -207,7 +207,7 @@
         },
         {
           "exemplar": true,
-          "expr": "avg(kubelet_volume_stats_capacity_bytes{persistentvolumeclaim=\"pvc-dind-$build_id\"}) by (persistentvolumeclaim)\n",
+          "expr": "kubelet_volume_stats_capacity_bytes{persistentvolumeclaim=\"pvc-dind-$build_id\"}\n",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -312,12 +312,28 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "avg(rate(container_cpu_usage_seconds_total{pod=\"dind-$build_id\",container=\"dind\"}[40s])) by (pod)",
+          "expr": "rate(container_cpu_usage_seconds_total{pod=\"dind-$build_id\",container=\"dind\"}[40s])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "{{pod}}",
+          "legendFormat": "CPU Usage {{pod}}",
           "refId": "A"
+        },
+        {
+          "exemplar": true,
+          "expr": "kube_pod_container_resource_limits{pod=\"dind-$build_id\", resource=\"cpu\", unit=\"core\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "CPU Limit {{pod}}",
+          "refId": "B"
+        },
+        {
+          "exemplar": true,
+          "expr": "kube_pod_container_resource_requests{pod=\"dind-$build_id\", resource=\"cpu\", unit=\"core\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "CPU Request {{pod}}",
+          "refId": "C"
         }
       ],
       "thresholds": [],
@@ -414,21 +430,29 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "avg(container_memory_usage_bytes{pod=\"dind-$build_id\",container=\"dind\"}) by (pod) / 1000000000",
+          "expr": "container_memory_usage_bytes{pod=\"dind-$build_id\",container=\"dind\"} / 1024^3",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "Memory usage (GB) {{pod}}",
+          "legendFormat": "Memory Usage {{pod}}",
           "refId": "A"
         },
         {
           "exemplar": true,
-          "expr": "avg(container_spec_memory_limit_bytes{pod=\"dind-$build_id\",container=\"dind\"}) by (pod) / 1000000000",
+          "expr": "kube_pod_container_resource_limits{pod=\"dind-$build_id\", resource=\"memory\"} / 1024^3",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "Memory limit (GB) {{pod}}",
+          "legendFormat": "Memory Limit {{pod}}",
           "refId": "B"
+        },
+        {
+          "exemplar": true,
+          "expr": "kube_pod_container_resource_requests{pod=\"dind-$build_id\", resource=\"memory\"} / 1024^3",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Memory Request {{pod}}",
+          "refId": "C"
         }
       ],
       "thresholds": [],
@@ -525,7 +549,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "avg(rate(container_network_receive_bytes_total{pod=\"dind-$build_id\"}[100s])) by (pod) * 8 / 1000000",
+          "expr": "rate(container_network_receive_bytes_total{pod=\"dind-$build_id\"}[100s]) * 8 / 1024^2",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -534,7 +558,7 @@
         },
         {
           "exemplar": true,
-          "expr": "avg(rate(container_network_transmit_bytes_total{pod=\"dind-$build_id\"}[100s])) by (pod) * 8 / 1000000",
+          "expr": "rate(container_network_transmit_bytes_total{pod=\"dind-$build_id\"}[100s]) * 8 / 1024^2",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -625,7 +649,7 @@
         "name": "build_id",
         "options": [
           {
-            "selected": true,
+            "selected": false,
             "text": "",
             "value": ""
           }
@@ -667,5 +691,5 @@
   "timezone": "",
   "title": "Codefresh / Build Metrics",
   "uid": "thvUvkFmzz",
-  "version": 2
+  "version": 10
 }
